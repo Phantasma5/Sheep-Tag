@@ -56,10 +56,10 @@ public class PlayerInput : MonoBehaviour
         transform.position += movement;
 
         //Check if the player is within 10 from origin box
-        if(transform.position.x < 10 &&
-            transform.position.x > -10 &&
-            transform.position.y < 10 &&
-            transform.position.y > -10)
+        if(transform.position.x < 2 &&
+            transform.position.x > -2 &&
+            transform.position.y < 2 &&
+            transform.position.y > -2)
         {
             GetComponent<PlayerRPC>().Rescue();
         }

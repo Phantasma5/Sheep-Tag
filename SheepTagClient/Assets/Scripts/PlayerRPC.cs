@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerRPC : MonoBehaviour
 {
     [HideInInspector] private PlayerInput playerInput;
+    [HideInInspector] public bool sheep = true;
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -12,37 +13,43 @@ public class PlayerRPC : MonoBehaviour
     }
     public void YouSheep(bool aSheep)
     {
-        if(null == playerInput)
+        if (null == playerInput)
         {
             return;
         }
 
-        //TODO: Change Sprite
-        if(aSheep)
+        if (aSheep)
         {
             playerInput.speed = 5;
+            sheep = true;
+            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("SheepSprite");
         }
         else
         {
             playerInput.speed = 10;
+            sheep = false;
+            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DogSprite");
         }
     }
     public void Rescue()
     {
-        References.client.gameObject.GetComponent<ClientNetwork>().CallRPC("FreeTheSheep", UCNetwork.MessageReceiver.ServerOnly, -1);
+        if (sheep && !playerInput.captured)
+        {
+            References.client.gameObject.GetComponent<ClientNetwork>().CallRPC("FreeTheSheep", UCNetwork.MessageReceiver.ServerOnly, -1);
+        }
     }
     public void Capture()
     {
         playerInput.captured = true;
-        References.player.transform.position = Vector3.zero;
+        transform.position = Vector3.zero;
     }
     public void Free()
     {
-        if(!playerInput.captured)
+        if (!playerInput.captured)
         {
             return;
         }
         playerInput.captured = false;
-        References.player.transform.position = new Vector3(Random.Range(-10,10), Random.Range(-10, 10), 0);
+        transform.position = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), 0);
     }
 }

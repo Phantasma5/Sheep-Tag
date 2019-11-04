@@ -6,35 +6,24 @@ public class TagDetection : MonoBehaviour
 {
     private TagServer tagServer;
     private ServerNetwork serverNetwork;
-    private float cooldown;
     private void Start()
     {
-        cooldown = Time.time;
         tagServer = GetComponent<TagServer>();
         serverNetwork = GetComponent<ServerNetwork>();
     }
     void Update()
     {
-        foreach (var netObjOutter in serverNetwork.networkObjects)
+        foreach (var netObjOuter in serverNetwork.networkObjects)
         {
-            Debug.Log("enter foreach");
-            if (netObjOutter.Value.it)//find a dog
+            if (netObjOuter.Value.it)//find a dog
             {
-                Debug.Log("Dog?");
                 foreach (var netObjInner in serverNetwork.networkObjects)//compare each person's position to that dog's position
                 {
-                    Debug.Log("Inner");
-                    if (2 > Vector3.Distance(netObjOutter.Value.position, netObjInner.Value.position)
-                    && netObjOutter.Value.networkId != netObjInner.Value.networkId
-                    && false != netObjInner.Value.it)
+                    if (2 > Vector3.Distance(netObjOuter.Value.position, netObjInner.Value.position)
+                    && netObjOuter.Value.networkId != netObjInner.Value.networkId
+                    && !netObjInner.Value.it)
                     {
-                        Debug.Log("If State");
-                        if (cooldown < Time.time)//cooldown so it doesn't change who is it back and forth every frame.
-                        {
-                            Debug.Log("CallRPC");
-                            serverNetwork.CallRPC("Capture", UCNetwork.MessageReceiver.AllClients, netObjInner.Value.networkId);
-                            cooldown = Time.time + 2;
-                        }
+                        serverNetwork.CallRPC("Capture", UCNetwork.MessageReceiver.AllClients, netObjInner.Value.networkId);
                     }
                 }
             }
@@ -42,7 +31,7 @@ public class TagDetection : MonoBehaviour
     }//end update
     public void GetIt()
     {
-        RandomIt();
+        RandomIt();//Placeholder
         foreach (var netObj in serverNetwork.networkObjects)
         {
             if (netObj.Value.it)
