@@ -15,6 +15,7 @@ public class TagServer : MonoBehaviour
     public int portNumber = 603;
 
     // Stores a player
+    [System.Serializable]
     public class Player
     {
         public long clientId;
@@ -22,7 +23,7 @@ public class TagServer : MonoBehaviour
         public bool isReady;
         public bool isConnected;
     }
-    [HideInInspector] public List<Player> players = new List<Player>();
+    /*[HideInInspector]*/ public List<Player> players = new List<Player>();
     int currentActivePlayer;
     private void Start()
     {
@@ -99,6 +100,28 @@ public class TagServer : MonoBehaviour
                 p.isConnected = false;
                 p.isReady = false;
                 GetComponent<TagDetection>().CheckIt();
+            }
+        }
+    }
+
+    void ClientReady(long aClientId)
+    {
+        foreach(Player p in players)
+        {
+            if(p.clientId == aClientId)
+            {
+                p.isReady = true;
+            }
+        }
+    }
+
+    void ClientUnready(long aClientId)
+    {
+        foreach (Player p in players)
+        {
+            if (p.clientId == aClientId)
+            {
+                p.isReady = false;
             }
         }
     }

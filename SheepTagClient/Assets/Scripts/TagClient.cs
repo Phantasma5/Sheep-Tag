@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class TagClient : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class TagClient : MonoBehaviour
     static TagClient instance = null;
     private bool loginInProcess = false;
     public GameObject loginScreen;
+    public GameObject readyScreen;
     public GameObject myPlayer;
     public bool it;
 
@@ -46,6 +48,17 @@ public class TagClient : MonoBehaviour
         ClientNetwork.port = aPort;
         clientNet.Connect(aServerAddress, ClientNetwork.port, "", "", "", 0);
     }
+    public void ConnectToServer(string userName, string aServerAddress, int aPort)
+    {
+        if (loginInProcess)
+        {
+            //return;
+        }
+        loginInProcess = true;
+
+        ClientNetwork.port = aPort;
+        clientNet.Connect(aServerAddress, ClientNetwork.port, userName, "", "", 0);
+    }
     public void UpdateState(int x, int y, string player)
     {
         // Update the visuals for the game
@@ -76,7 +89,10 @@ public class TagClient : MonoBehaviour
     }
     void OnNetStatusConnected()
     {
-        loginScreen.SetActive(false);
+        if(loginScreen)
+            loginScreen.SetActive(false);
+        if(readyScreen)
+            readyScreen.SetActive(true);
         Debug.Log("OnNetStatusConnected called");
 
         clientNet.AddToArea(1);
@@ -125,6 +141,15 @@ public class TagClient : MonoBehaviour
             clientNet.Disconnect("Peace out");
         }
     }
+    
+    public void ReadyUp(bool value)
+    {
+        if(value)
+        {
+            //clientNet.CallRPC("ClientReady", UCNetwork.MessageReceiver.ServerOnly, -1, clientNet.get)
+        }
+    }
+
 }//end class
 
 
