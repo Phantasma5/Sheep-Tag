@@ -22,6 +22,7 @@ public class TagServer : MonoBehaviour
         public string playerName;
         public bool isReady;
         public bool isConnected;
+        public bool wantDog;
     }
     /*[HideInInspector]*/ public List<Player> players = new List<Player>();
     int currentActivePlayer;

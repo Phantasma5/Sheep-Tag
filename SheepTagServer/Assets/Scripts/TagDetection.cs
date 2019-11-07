@@ -31,7 +31,7 @@ public class TagDetection : MonoBehaviour
     }//end update
     public void GetIt()
     {
-        RandomIt();//Placeholder
+        ChooseDogs();
         foreach (var netObj in serverNetwork.networkObjects)
         {
             if (netObj.Value.it)
@@ -44,14 +44,40 @@ public class TagDetection : MonoBehaviour
             }
         }
     }//end GetIt()
-    private void RandomIt()
+    private void ChooseDogs()
     {
-        bool makeIt = true;
+        int dogGoal = DogGoal();
+        int dogCount = 0;
+        
         foreach (var netObj in serverNetwork.networkObjects)
         {
-            makeIt = !makeIt;
-            netObj.Value.it = makeIt;
+            if(dogGoal > dogCount)
+            {
+                //TODO: Check if the player wants to be a dog
+                netObj.Value.it = true;
+            }
         }
+    }
+    private int DogGoal()
+    {
+        int dogGoal = 5;
+        if (10 <= serverNetwork.networkObjects.Count)
+        {
+            dogGoal = 4;
+        }
+        if (8 <= serverNetwork.networkObjects.Count)
+        {
+            dogGoal = 3;
+        }
+        if (6 <= serverNetwork.networkObjects.Count)
+        {
+            dogGoal = 2;
+        }
+        if (4 <= serverNetwork.networkObjects.Count)
+        {
+            dogGoal = 1;
+        }
+        return dogGoal;
     }
     public void CheckIt()
     {

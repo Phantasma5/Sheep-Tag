@@ -6,4 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Client.unity
+    path: Assets/Scenes/MaxClient.unity
+    guid: bb5f9ce12685dc247b94efabda6ee299
+  m_configObjects: {}
