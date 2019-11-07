@@ -21,7 +21,7 @@ public class References : MonoBehaviour
     }
     private void FindReferences()
     {
-        client = GameObject.FindWithTag("Client").GetComponent<TagClient>();
+        client = GetComponent<TagClient>();
     }
     
 }
