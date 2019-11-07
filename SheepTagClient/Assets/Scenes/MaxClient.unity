@@ -491,9 +491,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clientNet: {fileID: 0}
+  roundManagerPrefab: RoundManager
   loginScreen: {fileID: 248918549}
   readyScreen: {fileID: 0}
   myPlayer: {fileID: 0}
+  myRoundManager: {fileID: 0}
   it: 0
 --- !u!114 &1385401859
 MonoBehaviour:

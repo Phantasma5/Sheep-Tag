@@ -208,7 +208,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bc8e3e6f08178c4f85ff5eeac49f940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  output: 
+  roundManagerObjectName: RoundManager
+  server: {fileID: 1130796021}
+  tagDetect: {fileID: 1130796024}
+  minPlayerCount: 1
+  _currentPhase: 0
+  countDownLength: 5
+  gameLength: 36000
 --- !u!4 &1130796030
 Transform:
   m_ObjectHideFlags: 0

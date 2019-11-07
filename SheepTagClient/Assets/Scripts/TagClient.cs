@@ -10,10 +10,18 @@ public class TagClient : MonoBehaviour
     public ClientNetwork clientNet;
     static TagClient instance = null;
     private bool loginInProcess = false;
-    public GameObject loginScreen;
-    public GameObject readyScreen;
+    [SerializeField] private string roundManagerPrefab = "RoundManager";
+    [SerializeField] private GameObject loginScreen;
+    [SerializeField] private GameObject readyScreen;
     public GameObject myPlayer;
+    public GameObject myRoundManager;
     public bool it;
+
+    public int NetworkArea
+    {
+        get;
+        private set;
+    } = 1;
 
     // Singleton support
     public static TagClient GetInstance()
@@ -95,7 +103,7 @@ public class TagClient : MonoBehaviour
             readyScreen.SetActive(true);
         Debug.Log("OnNetStatusConnected called");
 
-        clientNet.AddToArea(1);
+        clientNet.AddToArea(NetworkArea);
     }
     void OnNetStatusDisconnecting()
     {
@@ -105,11 +113,15 @@ public class TagClient : MonoBehaviour
         {
             clientNet.Destroy(myPlayer.GetComponent<NetworkSync>().GetId());
         }
+        if(myRoundManager)
+        {
+            clientNet.Destroy(myRoundManager.GetComponent<NetworkSync>().GetId());
+        }
     }
     void OnNetStatusDisconnected()
     {
         Debug.Log("OnNetStatusDisconnected called");
-        SceneManager.LoadScene("Client");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
         loginInProcess = false;
 
@@ -117,14 +129,20 @@ public class TagClient : MonoBehaviour
         {
             clientNet.Destroy(myPlayer.GetComponent<NetworkSync>().GetId());
         }
+        if (myRoundManager)
+        {
+            clientNet.Destroy(myRoundManager.GetComponent<NetworkSync>().GetId());
+        }
     }
     public void OnChangeArea()
     {
         Debug.Log("OnChangeArea called");
 
-        // Tell the server we are ready
-        myPlayer = clientNet.Instantiate("Player", Vector3.zero, Quaternion.identity);
-        myPlayer.GetComponent<NetworkSync>().AddToArea(1);
+        myRoundManager = clientNet.Instantiate(roundManagerPrefab, Vector3.zero, Quaternion.identity);
+        myRoundManager.GetComponent<NetworkSync>().AddToArea(NetworkArea);
+
+        //myPlayer = clientNet.Instantiate("Player", Vector3.zero, Quaternion.identity);
+        //myPlayer.GetComponent<NetworkSync>().AddToArea(NetworkArea);
     }
     public void AreaInitialized()
     {
@@ -136,17 +154,13 @@ public class TagClient : MonoBehaviour
         {
             clientNet.Destroy(myPlayer.GetComponent<NetworkSync>().GetId());
         }
+        if (myRoundManager)
+        {
+            clientNet.Destroy(myRoundManager.GetComponent<NetworkSync>().GetId());
+        }
         if (clientNet.IsConnected())
         {
             clientNet.Disconnect("Peace out");
-        }
-    }
-    
-    public void ReadyUp(bool value)
-    {
-        if(value)
-        {
-            //clientNet.CallRPC("ClientReady", UCNetwork.MessageReceiver.ServerOnly, -1, clientNet.get)
         }
     }
 
