@@ -23,5 +23,9 @@ public class References : MonoBehaviour
     {
         client = GetComponent<TagClient>();
     }
-    
+
+    private void OnLevelWasLoaded(int level)
+    {
+        FindReferences();
+    }
 }
