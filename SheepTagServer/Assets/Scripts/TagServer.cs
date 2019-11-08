@@ -104,26 +104,4 @@ public class TagServer : MonoBehaviour
             }
         }
     }
-
-    void ClientReady(long aClientId)
-    {
-        foreach(Player p in players)
-        {
-            if(p.clientId == aClientId)
-            {
-                p.isReady = true;
-            }
-        }
-    }
-
-    void ClientUnready(long aClientId)
-    {
-        foreach (Player p in players)
-        {
-            if (p.clientId == aClientId)
-            {
-                p.isReady = false;
-            }
-        }
-    }
 }//end class

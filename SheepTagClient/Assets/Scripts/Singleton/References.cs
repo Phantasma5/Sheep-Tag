@@ -16,7 +16,7 @@ public class References : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
         FindReferences();
     }
     private void FindReferences()
@@ -24,8 +24,11 @@ public class References : MonoBehaviour
         client = GetComponent<TagClient>();
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnDestroy()
     {
-        FindReferences();
+        if(instance == this)
+        {
+            instance = null;
+        }
     }
 }

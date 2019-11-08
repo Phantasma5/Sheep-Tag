@@ -75,12 +75,17 @@ public class RoundManager : MonoBehaviour
     private void GameLogic_Lobby()
     {
         int playersReady = 0;
-        foreach(TagServer.Player player in server.players)
+        int playerCount = 0;
+        foreach(var netObj in server.serverNet.networkObjects)
         {
-            if (player.isReady)
-                playersReady++;
+            if(netObj.Value.prefabName == roundManagerObjectName)
+            {
+                playerCount++;
+                if (netObj.Value.ready)
+                    playersReady++;
+            }
         }
-        if(playersReady == server.players.Count && playersReady >= minPlayerCount)
+        if(playersReady == playerCount && playerCount >= minPlayerCount)
         {
             if (countdownRoutine == null)
             {
@@ -88,7 +93,7 @@ public class RoundManager : MonoBehaviour
                 {
                 //This lambda function is called when the countdown coroutine finishes.
 
-                foreach (var netObject in server.serverNet.networkObjects)
+                    foreach (var netObject in server.serverNet.networkObjects)
                     {
                         if (netObject.Value.prefabName == roundManagerObjectName)
                         {
@@ -131,7 +136,17 @@ public class RoundManager : MonoBehaviour
 
     private void GameLogic_Running()
     {
-        if(Time.timeSinceLevelLoad - gameStartTime >= gameLength)
+        bool noPlayersActive = true;
+        foreach(var netObj in server.serverNet.networkObjects)
+        {
+            if(netObj.Value.prefabName == roundManagerObjectName)
+            {
+                noPlayersActive = false;
+                break;
+            }
+        }
+
+        if(Time.timeSinceLevelLoad - gameStartTime >= gameLength || noPlayersActive)
         {
             CurrentPhase = GamePhase.GAMEOVER;
         }
@@ -160,12 +175,45 @@ public class RoundManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         //Restart Server/Scene/whatever
     }
+    
+    public void ClientReady(int clientId)
+    {
+        Debug.Log("Client ready - " + clientId);
+        if(server.serverNet.networkObjects.ContainsKey(clientId))
+        {
+            server.serverNet.networkObjects[clientId].ready = true;
+        }
+    }
+
+    public void ClientNotReady(int clientId)
+    {
+        Debug.Log("Client not ready - " + clientId);
+        if (server.serverNet.networkObjects.ContainsKey(clientId))
+        {
+            server.serverNet.networkObjects[clientId].ready = false;
+        }
+    }
 
     private IEnumerator Countdown(float t, VoidDelegate OnCountDownComplete)
     {
         yield return new WaitForSeconds(t);
         OnCountDownComplete.Invoke();
         countdownRoutine = null;
+    }
+
+    public void ForceGameStart()
+    {
+        if(CurrentPhase == GamePhase.LOBBY)
+        {
+            foreach (var netObject in server.serverNet.networkObjects)
+            {
+                if (netObject.Value.prefabName == roundManagerObjectName)
+                {
+                    server.serverNet.CallRPC("RoundStart", UCNetwork.MessageReceiver.AllClients, netObject.Value.networkId, gameLength);
+                }
+            }
+            CurrentPhase = GamePhase.RUNNING;
+        }
     }
 
 #if UNITY_EDITOR

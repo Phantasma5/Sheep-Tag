@@ -11,8 +11,8 @@ public class TagClient : MonoBehaviour
     static TagClient instance = null;
     private bool loginInProcess = false;
     [SerializeField] private string roundManagerPrefab = "RoundManager";
-    [SerializeField] private GameObject loginScreen;
-    [SerializeField] private GameObject readyScreen;
+    public GameObject loginScreen;
+    public GameObject readyScreen;
     public GameObject myPlayer;
     public GameObject myRoundManager;
     public bool it;

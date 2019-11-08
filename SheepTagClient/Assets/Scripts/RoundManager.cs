@@ -4,10 +4,16 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+#pragma warning disable 0649
 public class RoundManager : MonoBehaviour
 {
     [SerializeField] private string playerPrefab = "Player";
     [SerializeField] private Text timerOutput;
+    public bool IsReady
+    {
+        get;
+        private set;
+    } = false;
 
     #region RPCs
     public void LobbyCountDownStart(float countDownLength)
@@ -29,12 +35,17 @@ public class RoundManager : MonoBehaviour
         if(timerRoutine != null)
         {
             StopCoroutine(timerRoutine);
+            timerOutput.gameObject.SetActive(false);
         }
     }
 
     public void RoundStart(float roundLength)
     {
         Debug.Log("Round start");
+
+        if(References.client.readyScreen)
+            References.client.readyScreen.SetActive(false);
+
         if(timerOutput)
         {
             if (timerRoutine != null)
@@ -65,6 +76,22 @@ public class RoundManager : MonoBehaviour
     {
         //Not yet implemented
         //Problem: How does the server RPC (or other method) know what client set it info? What is the proper way to do this?
+        NetworkSync ns = GetComponent<NetworkSync>();
+        if (ns)
+        {
+            References.client.clientNet.CallRPC("ClientReady", UCNetwork.MessageReceiver.ServerOnly, -1, ns.GetId());
+            IsReady = true;
+        }
+    }
+
+    public void UnReady()
+    {
+        NetworkSync ns = GetComponent<NetworkSync>();
+        if (ns)
+        {
+            References.client.clientNet.CallRPC("ClientNotReady", UCNetwork.MessageReceiver.ServerOnly, -1, ns.GetId());
+            IsReady = false;
+        }
     }
 
     private Coroutine timerRoutine;

@@ -10,6 +10,8 @@ public class TitleScreenLogic : MonoBehaviour {
     public TagClient client;
 
     public UnityEvent OnInvalidConnect;
+    public UnityEvent OnReady;
+    public UnityEvent OnUnready;
 
     public void Connect()
     {
@@ -29,6 +31,24 @@ public class TitleScreenLogic : MonoBehaviour {
         else
         {
             client.ConnectToServer(user, address, portNum);
+        }
+    }
+
+    public void ToggleReady()
+    {
+        RoundManager rm = References.client.myRoundManager.GetComponent<RoundManager>();
+        if(rm)
+        {
+            if(rm.IsReady)
+            {
+                rm.UnReady();
+                OnUnready.Invoke();
+            }
+            else
+            {
+                rm.ReadyUp();
+                OnReady.Invoke();
+            }
         }
     }
 }
