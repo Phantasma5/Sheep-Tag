@@ -5,6 +5,7 @@ using UnityEngine;
 public class RoundManager : MonoBehaviour
 {
     [SerializeField] private string roundManagerObjectName = "RoundManager";
+    [SerializeField] private float percentageDogs = 0.25f;
 
     [SerializeField] TagServer server;
     [SerializeField] private TagDetection tagDetect;
@@ -75,29 +76,21 @@ public class RoundManager : MonoBehaviour
     private void GameLogic_Lobby()
     {
         int playersReady = 0;
-        foreach(TagServer.Player player in server.players)
+        int playerCount = 0;
+        foreach(var netObj in server.serverNet.networkObjects)
         {
-            if (player.isReady)
-                playersReady++;
+            if(netObj.Value.prefabName == roundManagerObjectName)
+            {
+                playerCount++;
+                if (netObj.Value.ready)
+                    playersReady++;
+            }
         }
-        if(playersReady == server.players.Count && playersReady >= minPlayerCount)
+        if(playersReady == playerCount && playerCount >= minPlayerCount)
         {
             if (countdownRoutine == null)
             {
-                countdownRoutine = StartCoroutine(Countdown(countDownLength, () =>
-                {
-                //This lambda function is called when the countdown coroutine finishes.
-
-                foreach (var netObject in server.serverNet.networkObjects)
-                    {
-                        if (netObject.Value.prefabName == roundManagerObjectName)
-                        {
-                            server.serverNet.CallRPC("RoundStart", UCNetwork.MessageReceiver.AllClients, netObject.Value.networkId, gameLength);
-                        }
-                    }
-                    CurrentPhase = GamePhase.RUNNING;
-                //End lambda callback function.
-            }));
+                countdownRoutine = StartCoroutine(Countdown(countDownLength, () => CurrentPhase = GamePhase.RUNNING ));
 
                 foreach (var netObject in server.serverNet.networkObjects)
                 {
@@ -125,13 +118,72 @@ public class RoundManager : MonoBehaviour
 
     private void OnGameRunning()
     {
+        //Close server off to new players
+
+        List<int> dogPlayers = new List<int>();
+        List<int> sheepPlayers = new List<int>();
+
+        foreach (var netObject in server.serverNet.networkObjects)
+        {
+            if(netObject.Value.prefabName == roundManagerObjectName)
+            {
+                if(netObject.Value.it)
+                {
+                    dogPlayers.Add(netObject.Key);
+                }
+                else
+                {
+                    sheepPlayers.Add(netObject.Key);
+                }
+            }
+        }
+
+        int dogCount = Mathf.Max(1, Mathf.FloorToInt(percentageDogs * (dogPlayers.Count + sheepPlayers.Count)));
+        Debug.Log("Selecting " + dogCount + " dogs from " + dogPlayers.Count + " willing dogs and " + sheepPlayers.Count + " willing sheep.");
+        while(dogCount > 0)
+        {
+            int newDog;
+            if (dogPlayers.Count > 0)
+            {
+                int index = Random.Range(0, dogPlayers.Count);
+                newDog = dogPlayers[index];
+                dogPlayers.RemoveAt(index);
+            }
+            else
+            {
+                int index = Random.Range(0, sheepPlayers.Count);
+                newDog = sheepPlayers[index];
+                sheepPlayers.RemoveAt(index);
+            }
+            server.serverNet.networkObjects[newDog].it = true;
+            server.serverNet.CallRPC("RoundStart", UCNetwork.MessageReceiver.AllClients, newDog, new object[] { gameLength, true });
+            --dogCount;
+        }
+        Debug.Log("Remaining sheep players: " + sheepPlayers.Count);
+        while(sheepPlayers.Count > 0)
+        {
+            server.serverNet.networkObjects[sheepPlayers[0]].it = false;
+            server.serverNet.CallRPC("RoundStart", UCNetwork.MessageReceiver.AllClients, sheepPlayers[0], new object[] { gameLength, false });
+            sheepPlayers.RemoveAt(0);
+        }
+
         tagDetect.enabled = true;
         gameStartTime = Time.timeSinceLevelLoad;
     }
 
     private void GameLogic_Running()
     {
-        if(Time.timeSinceLevelLoad - gameStartTime >= gameLength)
+        bool noPlayersActive = true;
+        foreach(var netObj in server.serverNet.networkObjects)
+        {
+            if(netObj.Value.prefabName == roundManagerObjectName)
+            {
+                noPlayersActive = false;
+                break;
+            }
+        }
+
+        if(Time.timeSinceLevelLoad - gameStartTime >= gameLength || noPlayersActive)
         {
             CurrentPhase = GamePhase.GAMEOVER;
         }
@@ -158,7 +210,41 @@ public class RoundManager : MonoBehaviour
             }
         }
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
-        //Restart Server/Scene/whatever
+    }
+    
+    public void ClientReady(int clientId)
+    {
+        if (CurrentPhase != GamePhase.LOBBY)
+            return;
+
+        Debug.Log("Client ready - " + clientId);
+        if(server.serverNet.networkObjects.ContainsKey(clientId))
+        {
+            server.serverNet.networkObjects[clientId].ready = true;
+        }
+    }
+
+    public void ClientNotReady(int clientId)
+    {
+        if (CurrentPhase != GamePhase.LOBBY)
+            return;
+
+        Debug.Log("Client not ready - " + clientId);
+        if (server.serverNet.networkObjects.ContainsKey(clientId))
+        {
+            server.serverNet.networkObjects[clientId].ready = false;
+        }
+    }
+
+    public void ItPreference(bool value, int clientId)
+    {
+        if (CurrentPhase != GamePhase.LOBBY)
+            return;
+
+        if (server.serverNet.networkObjects.ContainsKey(clientId))
+        {
+            server.serverNet.networkObjects[clientId].it = value;
+        }
     }
 
     private IEnumerator Countdown(float t, VoidDelegate OnCountDownComplete)
@@ -166,6 +252,21 @@ public class RoundManager : MonoBehaviour
         yield return new WaitForSeconds(t);
         OnCountDownComplete.Invoke();
         countdownRoutine = null;
+    }
+
+    public void ForceGameStart()
+    {
+        if(CurrentPhase == GamePhase.LOBBY)
+        {
+            foreach (var netObject in server.serverNet.networkObjects)
+            {
+                if (netObject.Value.prefabName == roundManagerObjectName)
+                {
+                    server.serverNet.CallRPC("RoundStart", UCNetwork.MessageReceiver.AllClients, netObject.Value.networkId, gameLength);
+                }
+            }
+            CurrentPhase = GamePhase.RUNNING;
+        }
     }
 
 #if UNITY_EDITOR

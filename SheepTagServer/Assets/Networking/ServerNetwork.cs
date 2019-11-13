@@ -62,9 +62,11 @@ public class ServerNetwork : UCNetwork
     List<ClientData> clientData = new List<ClientData>();
 
     // Lets store some data about instantiated objects
+    [System.Serializable]
     public class NetworkObject
     {
         public bool it;
+        public bool ready;
         public string prefabName;
         public List<int> areaIds; // The areas this networked object is in
         public int networkId;

@@ -22,6 +22,7 @@ public class TagServer : MonoBehaviour
         public string playerName;
         public bool isReady;
         public bool isConnected;
+        public bool wantDog;
     }
     /*[HideInInspector]*/ public List<Player> players = new List<Player>();
     int currentActivePlayer;
@@ -100,28 +101,6 @@ public class TagServer : MonoBehaviour
                 p.isConnected = false;
                 p.isReady = false;
                 GetComponent<TagDetection>().CheckIt();
-            }
-        }
-    }
-
-    void ClientReady(long aClientId)
-    {
-        foreach(Player p in players)
-        {
-            if(p.clientId == aClientId)
-            {
-                p.isReady = true;
-            }
-        }
-    }
-
-    void ClientUnready(long aClientId)
-    {
-        foreach (Player p in players)
-        {
-            if (p.clientId == aClientId)
-            {
-                p.isReady = false;
             }
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class References : MonoBehaviour
 {
     public static References instance;
-    public static GameObject player;
+    public static GameObject localPlayer;
     public static TagClient client;
 
     private void Awake()
@@ -16,16 +16,19 @@ public class References : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
         FindReferences();
     }
     private void FindReferences()
     {
-        client = GameObject.FindWithTag("Client").GetComponent<TagClient>();
+        client = GetComponent<TagClient>();
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnDestroy()
     {
-        FindReferences();
+        if(instance == this)
+        {
+            instance = null;
+        }
     }
 }
