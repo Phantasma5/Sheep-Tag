@@ -8,44 +8,16 @@ public class PlayerInput : MonoBehaviour
     #endregion
     #region Variables
     [HideInInspector] public float speed = 5;
-    [HideInInspector] private Vector3 camStartPos;
-    [HideInInspector] private Vector3 camDragDif;
-    [HideInInspector] private Vector3 camOrigin;
     /*[HideInInspector]*/ public bool captured = false;
     #endregion
     private void Awake()
     {
         if (GetComponent<NetworkSync>().owned)
         {
-            References.player = this.gameObject;
+            References.localPlayer = this.gameObject;
         }
     }
-    private void CameraInput()
-    {
-        if (Input.GetMouseButtonDown(2))
-        {
-            camStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
-        if (Input.GetMouseButton(2))
-        {
-            camDragDif = (Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Camera.main.transform.position;
-            Camera.main.transform.position = camStartPos - camDragDif;
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Camera.main.transform.position = camOrigin;
-            Camera.main.orthographicSize = 5;
-        }
-        float zoom = Input.GetAxis("Mouse ScrollWheel");
-        if (zoom < 0f)
-        {
-            Camera.main.orthographicSize *= 1.1f;
-        }
-        if (zoom > 0f)
-        {
-            Camera.main.orthographicSize *= 0.9f;
-        }
-    }
+    
     private void PlayerMovement()
     {
         if(captured)
@@ -69,7 +41,6 @@ public class PlayerInput : MonoBehaviour
         if (GetComponent<NetworkSync>().owned)
         {
             PlayerMovement();
-            CameraInput();
         }
     }
 }

@@ -15,8 +15,9 @@ GameObject:
   - component: {fileID: -6844465200314246350}
   - component: {fileID: 4067207086306392120}
   - component: {fileID: 1337639379846406859}
+  - component: {fileID: 6724361563841728310}
   m_Layer: 0
-  m_Name: Player _Sheep
+  m_Name: Player_Sheep
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,3 +172,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.64, y: 0.64}
   m_EdgeRadius: 0
+--- !u!114 &6724361563841728310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010831633188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b46f909041b8b2b459d494023cd4ee1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
