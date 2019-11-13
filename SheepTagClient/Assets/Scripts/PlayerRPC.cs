@@ -5,11 +5,11 @@ using UnityEngine;
 public class PlayerRPC : MonoBehaviour
 {
     [HideInInspector] private PlayerInput playerInput;
-    [HideInInspector] public bool sheep = true;
+    public bool sheep = true;
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
-        References.client.gameObject.GetComponent<ClientNetwork>().CallRPC("GetIt", UCNetwork.MessageReceiver.ServerOnly, -1);
+        //References.client.gameObject.GetComponent<ClientNetwork>().CallRPC("GetIt", UCNetwork.MessageReceiver.ServerOnly, -1);
     }
     public void YouSheep(bool aSheep)
     {
@@ -22,13 +22,13 @@ public class PlayerRPC : MonoBehaviour
         {
             playerInput.speed = 5;
             sheep = true;
-            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("SheepSprite");
+            //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("SheepSprite");
         }
         else
         {
             playerInput.speed = 10;
             sheep = false;
-            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DogSprite");
+            //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DogSprite");
         }
     }
     public void Rescue()

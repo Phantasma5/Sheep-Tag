@@ -11,7 +11,7 @@ public class PlayerInput : MonoBehaviour
     [HideInInspector] private Vector3 camStartPos;
     [HideInInspector] private Vector3 camDragDif;
     [HideInInspector] private Vector3 camOrigin;
-    [HideInInspector] public bool captured = false;
+    /*[HideInInspector]*/ public bool captured = false;
     #endregion
     private void Awake()
     {

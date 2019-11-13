@@ -721,6 +721,41 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 210303732}
+    - target: {fileID: 5214002897182093690, guid: 27a30405e13d651489e5a373c3c99eb2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3427568603634624468, guid: 27a30405e13d651489e5a373c3c99eb2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 937595197364067448, guid: 27a30405e13d651489e5a373c3c99eb2,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 2782578693000395889, guid: 27a30405e13d651489e5a373c3c99eb2,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 210303732}
+    - target: {fileID: 2782578693000395889, guid: 27a30405e13d651489e5a373c3c99eb2,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetRolePreference
+      objectReference: {fileID: 0}
+    - target: {fileID: 2782578693000395889, guid: 27a30405e13d651489e5a373c3c99eb2,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2782578693000395889, guid: 27a30405e13d651489e5a373c3c99eb2,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27a30405e13d651489e5a373c3c99eb2, type: 3}
 --- !u!1 &5214002897063476004 stripped
