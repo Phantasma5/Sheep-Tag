@@ -161,6 +161,8 @@ public class RoundManager : MonoBehaviour
             server.serverNet.CallRPC("RoundStart", UCNetwork.MessageReceiver.AllClients, newDog, new object[] { gameLength, true });
             --dogCount;
         }
+
+        sheepPlayers.AddRange(dogPlayers);
         Debug.Log("Remaining sheep players: " + sheepPlayers.Count);
         while(sheepPlayers.Count > 0)
         {
