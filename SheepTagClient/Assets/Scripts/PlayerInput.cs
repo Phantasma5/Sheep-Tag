@@ -7,7 +7,7 @@ public class PlayerInput : MonoBehaviour
     [HideInInspector] private Rigidbody2D myRigidbody2D;
     #endregion
     #region Variables
-    [HideInInspector] public float speed = 2;
+    [SerializeField] private float speed;
     /*[HideInInspector]*/ public bool captured = false;
     [HideInInspector] private float captureCooldown = 0;
     #endregion
@@ -37,7 +37,7 @@ public class PlayerInput : MonoBehaviour
         }
         myRigidbody2D.velocity = new Vector3(Input.GetAxis("Horizontal") * speed, Input.GetAxis("Vertical") * speed, 0);
 
-        if (gameObject.name == "Player_Sheep" &&
+        if (gameObject.name == "Player_Sheep(Clone)" &&
             transform.position.x < 2 &&
             transform.position.x > -2 &&
             transform.position.y < 2 &&

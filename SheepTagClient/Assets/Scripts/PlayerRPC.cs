@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerRPC : MonoBehaviour
 {
     [HideInInspector] private PlayerInput playerInput;
-    public bool sheep = true;
+    //public bool sheep = true;
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -13,27 +13,25 @@ public class PlayerRPC : MonoBehaviour
     }
     public void YouSheep(bool aSheep)
     {
-        if (null == playerInput)
-        {
-            return;
-        }
+    //    if (null == playerInput)
+    //    {
+    //        return;
+    //    }
 
-        if (aSheep)
-        {
-            playerInput.speed = 2;
-            sheep = true;
-            //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("SheepSprite");
-        }
-        else
-        {
-            playerInput.speed = 5;
-            sheep = false;
-            //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DogSprite");
-        }
+    //    if (aSheep)
+    //    {
+    //        sheep = true;
+    //        //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("SheepSprite");
+    //    }
+    //    else
+    //    {
+    //        sheep = false;
+    //        //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DogSprite");
+    //    }
     }
     public void Rescue()
     {
-        if (sheep && !playerInput.captured)
+        if (gameObject.name == "Player_Sheep(Clone)" && !playerInput.captured)
         {
             References.client.gameObject.GetComponent<ClientNetwork>().CallRPC("FreeTheSheep", UCNetwork.MessageReceiver.ServerOnly, -1);
         }
@@ -51,12 +49,12 @@ public class PlayerRPC : MonoBehaviour
             return;
         }
         playerInput.captured = false;
-        transform.position = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), 0);
+        transform.position = new Vector3(Random.Range(-5, 8), Random.Range(-5, 4), 0);
     }
 
     public void SetCondition(string condition)
     {
-        if (sheep == false)
+        if (gameObject.name != "Player_Sheep(Clone)")
             return;
 
         NetworkSync ns = GetComponent<NetworkSync>();

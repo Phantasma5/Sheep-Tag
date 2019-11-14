@@ -183,7 +183,7 @@ public class RoundManager : MonoBehaviour
         bool allSafe = true;
         foreach(var netObj in server.serverNet.networkObjects)
         {
-            Debug.Log(netObj.Value.prefabName + " | " + netObj.Value.condition);
+            //Debug.Log(netObj.Value.prefabName + " | " + netObj.Value.condition);
 
             if(netObj.Value.prefabName == roundManagerObjectName)
             {
