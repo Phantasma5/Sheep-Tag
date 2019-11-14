@@ -1,3 +1,1 @@
 ...Logging started...
-27.6478888: Server Started
-28.5563663: Server shutdown
