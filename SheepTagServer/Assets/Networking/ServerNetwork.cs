@@ -67,6 +67,7 @@ public class ServerNetwork : UCNetwork
     {
         public bool it;
         public bool ready;
+        public string condition = "NONE";
         public string prefabName;
         public List<int> areaIds; // The areas this networked object is in
         public int networkId;

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4067207086306392120}
   - component: {fileID: 1337639379846406859}
   - component: {fileID: 2153975652459763294}
+  - component: {fileID: 4038518651646604763}
   m_Layer: 0
   m_Name: Player_Dog
   m_TagString: Player
@@ -77,7 +78,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010831633188}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f88074536be4f7d499d64806f3a0c3bf, type: 3}
   m_Name: 
@@ -134,7 +135,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 1cdb1f6802f3dd944883b2382c24da34, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -171,8 +172,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   serializedVersion: 2
   m_Size: {x: 0.64, y: 0.64}
-  m_EdgeRadius: 0
+  m_EdgeRadius: 1
 --- !u!114 &2153975652459763294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010831633188}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bef86b33875850547bfa155b671daa77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4038518651646604763
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -181,6 +194,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000010831633188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef86b33875850547bfa155b671daa77, type: 3}
+  m_Script: {fileID: 11500000, guid: 4916e1a999976fc4791c80bf9b49bb87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  components:
+  - {fileID: 2153975652459763294}
+  - {fileID: 114708341656305832}

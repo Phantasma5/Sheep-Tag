@@ -286,9 +286,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roundManagerObjectName: RoundManager
+  playerDogPrefab: Player_Dog
+  playerSheepPrefab: Player_Sheep
+  percentageDogs: 0.25
   server: {fileID: 1130796021}
   tagDetect: {fileID: 1130796024}
-  minPlayerCount: 1
+  minPlayerCount: 2
   _currentPhase: 0
   countDownLength: 5
   gameLength: 36000

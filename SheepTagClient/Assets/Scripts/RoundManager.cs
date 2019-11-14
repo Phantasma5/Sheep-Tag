@@ -7,9 +7,10 @@ using UnityEngine.UI;
 #pragma warning disable 0649
 public class RoundManager : MonoBehaviour
 {
-    [SerializeField] private string playerDogPrefab = "Player_Dog";
-    [SerializeField] private string playerSheepPrefab = "Player_Sheep";
+    public const string playerDogPrefab = "Player_Dog";
+    public const string playerSheepPrefab = "Player_Sheep";
     [SerializeField] private Text timerOutput;
+    [SerializeField] private NetworkSync netSync;
     public bool IsReady
     {
         get;
@@ -29,6 +30,9 @@ public class RoundManager : MonoBehaviour
     #region RPCs
     public void LobbyCountDownStart(float countDownLength)
     {
+        if (!netSync.owned)
+            return;
+
         Debug.Log("Lobby Countdown start: " + countDownLength);
         if(timerOutput)
         {
@@ -42,6 +46,9 @@ public class RoundManager : MonoBehaviour
 
     public void LobbyCountDownStop()
     {
+        if (!netSync.owned)
+            return;
+
         Debug.Log("Lobby Countdown stop");
         if(timerRoutine != null)
         {
@@ -52,6 +59,9 @@ public class RoundManager : MonoBehaviour
 
     public void RoundStart(float roundLength, bool itValue)
     {
+        if (!netSync.owned)
+            return;
+
         Debug.Log("Round start");
 
         if(References.client.readyScreen)
@@ -70,23 +80,31 @@ public class RoundManager : MonoBehaviour
 
         if(IsDog)
         {
-            References.client.myPlayer = References.client.clientNet.Instantiate(playerDogPrefab, Vector3.zero, Quaternion.identity);
+            References.client.myPlayer = SpawnPoint.SpawnDog();
         }
         else
         {
-            References.client.myPlayer = References.client.clientNet.Instantiate(playerSheepPrefab, Vector3.zero, Quaternion.identity);
+            References.client.myPlayer = SpawnPoint.SpawnSheep();
         }
+        References.localPlayer = References.client.myPlayer;
+        References.localPlayer.GetComponent<EnableOnLocalSpawn>()?.LocalSpawn();
         References.client.myPlayer.GetComponent<NetworkSync>().AddToArea(References.client.NetworkArea);
     }
 
     public void GameRoundOver()
     {
+        if (!netSync.owned)
+            return;
+
         //Countdown to disconnect, currently no countdown.
         Debug.Log("Round over");
     }
 
     public void LeaveGame()
     {
+        if (!netSync.owned)
+            return;
+
         Debug.Log("Leave");
         //Things I would do here are pretty much covered by TagClient.OnStatusDisconnected()
     }
@@ -94,42 +112,24 @@ public class RoundManager : MonoBehaviour
 
     public void ReadyUp()
     {
-        //Not yet implemented
-        //Problem: How does the server RPC (or other method) know what client set it info? What is the proper way to do this?
-        NetworkSync ns = GetComponent<NetworkSync>();
-        if (ns)
-        {
-            References.client.clientNet.CallRPC("ClientReady", UCNetwork.MessageReceiver.ServerOnly, -1, ns.GetId());
-            IsReady = true;
-        }
+        References.client.clientNet.CallRPC("ClientReady", UCNetwork.MessageReceiver.ServerOnly, -1, netSync.GetId());
+        IsReady = true;
     }
 
     public void UnReady()
     {
-        NetworkSync ns = GetComponent<NetworkSync>();
-        if (ns)
-        {
-            References.client.clientNet.CallRPC("ClientNotReady", UCNetwork.MessageReceiver.ServerOnly, -1, ns.GetId());
-            IsReady = false;
-        }
+        References.client.clientNet.CallRPC("ClientNotReady", UCNetwork.MessageReceiver.ServerOnly, -1, netSync.GetId());
+        IsReady = false;
     }
 
     public void SetPreferenceDog()
     {
-        NetworkSync ns = GetComponent<NetworkSync>();
-        if (ns)
-        {
-            References.client.clientNet.CallRPC("ItPreference", UCNetwork.MessageReceiver.ServerOnly, -1, new object[] { true, ns.GetId() });
-        }
+        References.client.clientNet.CallRPC("ItPreference", UCNetwork.MessageReceiver.ServerOnly, -1, new object[] { true, netSync.GetId() });
     }
 
     public void SetPreferenceSheep()
     {
-        NetworkSync ns = GetComponent<NetworkSync>();
-        if (ns)
-        {
-            References.client.clientNet.CallRPC("ItPreference", UCNetwork.MessageReceiver.ServerOnly, -1, new object[] { false, ns.GetId() });
-        }
+        References.client.clientNet.CallRPC("ItPreference", UCNetwork.MessageReceiver.ServerOnly, -1, new object[] { false, netSync.GetId() });
     }
 
     private Coroutine timerRoutine;
@@ -159,4 +159,12 @@ public class RoundManager : MonoBehaviour
             output.text = "0";
         }
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if(netSync == null)
+            netSync = GetComponent<NetworkSync>();
+    }
+#endif
 }

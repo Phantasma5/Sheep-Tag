@@ -118,4 +118,13 @@ public class TagDetection : MonoBehaviour
         }
     }
 
+
+    public void SetCondition(int clientID, string condition )
+    {
+        if(serverNetwork.networkObjects.ContainsKey(clientID))
+        {
+            //Using JSON (improperly) here just so I don't have to keep adding vars to struct
+            serverNetwork.networkObjects[clientID].condition = condition;
+        }
+    }
 }//end class

@@ -8,6 +8,19 @@ public class References : MonoBehaviour
     public static GameObject localPlayer;
     public static TagClient client;
 
+#if UNITY_EDITOR
+    [SerializeField] private References _instance;
+    [SerializeField] private GameObject _localPlayer;
+    [SerializeField] private TagClient _client;
+    
+    private void Update()
+    {
+        _instance = instance;
+        _localPlayer = localPlayer;
+        _client = client;
+    }
+#endif
+
     private void Awake()
     {
         if(null != instance)

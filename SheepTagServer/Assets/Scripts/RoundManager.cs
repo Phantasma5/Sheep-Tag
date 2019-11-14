@@ -5,11 +5,13 @@ using UnityEngine;
 public class RoundManager : MonoBehaviour
 {
     [SerializeField] private string roundManagerObjectName = "RoundManager";
+    [SerializeField] private string playerDogPrefab = "Player_Dog";
+    [SerializeField] private string playerSheepPrefab = "Player_Sheep";
     [SerializeField] private float percentageDogs = 0.25f;
 
     [SerializeField] TagServer server;
     [SerializeField] private TagDetection tagDetect;
-    [SerializeField] private int minPlayerCount = 1;
+    [SerializeField] private int minPlayerCount = 2;
 
     public enum GamePhase
     {
@@ -173,17 +175,40 @@ public class RoundManager : MonoBehaviour
 
     private void GameLogic_Running()
     {
-        bool noPlayersActive = true;
+        bool moveToGameOver = true;
+        bool atLeastOneSheep = false;
+        bool allCaptured = true;
+        bool allSafe = true;
         foreach(var netObj in server.serverNet.networkObjects)
         {
+            Debug.Log(netObj.Value.prefabName + " | " + netObj.Value.condition);
+
             if(netObj.Value.prefabName == roundManagerObjectName)
             {
-                noPlayersActive = false;
-                break;
+                moveToGameOver = false;
+            }
+            else if(netObj.Value.prefabName == playerSheepPrefab)
+            {
+                atLeastOneSheep = true;
+                if (netObj.Value.condition != "CAPTURED")
+                {
+                    allCaptured = false;
+                }
+                if (netObj.Value.condition != "SAFE")
+                {
+                    allSafe = false;
+                }
             }
         }
 
-        if(Time.timeSinceLevelLoad - gameStartTime >= gameLength || noPlayersActive)
+        if((allCaptured || allSafe) && atLeastOneSheep)
+        {
+            //Send what kind of game over
+            Debug.Log("All captured" + allCaptured + "\nAll safe: " + allSafe);
+            moveToGameOver = true;
+        }
+
+        if(Time.timeSinceLevelLoad - gameStartTime >= gameLength || moveToGameOver)
         {
             CurrentPhase = GamePhase.GAMEOVER;
         }

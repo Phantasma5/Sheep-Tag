@@ -52,4 +52,16 @@ public class PlayerRPC : MonoBehaviour
         playerInput.captured = false;
         transform.position = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), 0);
     }
+
+    public void SetCondition(string condition)
+    {
+        if (sheep == false)
+            return;
+
+        NetworkSync ns = GetComponent<NetworkSync>();
+        if (ns)
+        {
+            References.client.clientNet.CallRPC("SetCondition", UCNetwork.MessageReceiver.ServerOnly, -1, new object[] { ns.GetId(), condition });
+        }
+    }
 }
