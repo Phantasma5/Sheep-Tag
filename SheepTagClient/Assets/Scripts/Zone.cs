@@ -11,7 +11,7 @@ public class Zone : MonoBehaviour
         CAPTURED
     }
     [SerializeField] private PlayerCondition Condition = PlayerCondition.NONE;
-    private List<PlayerRPC> previousFoundRPCs = new List<PlayerRPC>();
+    [SerializeField] private List<PlayerRPC> previousFoundRPCs = new List<PlayerRPC>();
 
     private void FixedUpdate()
     {

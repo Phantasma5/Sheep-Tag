@@ -306,13 +306,6 @@ public class RoundManager : MonoBehaviour
     {
         if(CurrentPhase == GamePhase.LOBBY)
         {
-            foreach (var netObject in server.serverNet.networkObjects)
-            {
-                if (netObject.Value.prefabName == roundManagerObjectName)
-                {
-                    server.serverNet.CallRPC("RoundStart", UCNetwork.MessageReceiver.AllClients, netObject.Value.networkId, gameLength);
-                }
-            }
             CurrentPhase = GamePhase.RUNNING;
         }
     }
