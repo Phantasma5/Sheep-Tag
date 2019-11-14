@@ -248,6 +248,7 @@ public class RoundManager : MonoBehaviour
         if(server.serverNet.networkObjects.ContainsKey(clientId))
         {
             server.serverNet.networkObjects[clientId].ready = true;
+            //TellClientsReadyStatus();
         }
     }
 
@@ -260,6 +261,26 @@ public class RoundManager : MonoBehaviour
         if (server.serverNet.networkObjects.ContainsKey(clientId))
         {
             server.serverNet.networkObjects[clientId].ready = false;
+            //TellClientsReadyStatus();
+        }
+    }
+
+    private void TellClientsReadyStatus()
+    {
+        List<KeyValuePair<string, bool>> readyStatus = new List<KeyValuePair<string, bool>>();
+        Stack<int> roundManagerIDs = new Stack<int>();
+        foreach(var netObj in server.serverNet.networkObjects)
+        {
+            if(netObj.Value.prefabName == roundManagerObjectName)
+            {
+                roundManagerIDs.Push(netObj.Key);
+                readyStatus.Add(new KeyValuePair<string, bool>(netObj.Value.prefabName, netObj.Value.ready));
+            }
+        }
+
+        while(roundManagerIDs.Count > 0)
+        {
+            server.serverNet.CallRPC("DisplayReadyStatus", UCNetwork.MessageReceiver.AllClients, roundManagerIDs.Pop(), readyStatus.ToArray());
         }
     }
 

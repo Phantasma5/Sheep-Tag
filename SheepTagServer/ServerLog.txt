@@ -1,6 +1,3 @@
 ...Logging started...
-<<<<<<< HEAD
-=======
-2603.0245682: Server Started
-2613.7570972: Server shutdown
->>>>>>> master
+114.9494669: Server Started
+132.8582513: Server shutdown

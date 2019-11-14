@@ -18,7 +18,7 @@ public class Zone : MonoBehaviour
         float radius = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
 
         Collider2D[] overlappedCols = Physics2D.OverlapCircleAll(transform.position, radius);
-        List<PlayerRPC> rpcsNotFound = previousFoundRPCs;
+        List<PlayerRPC> rpcsNotFound = new List<PlayerRPC>(previousFoundRPCs);
         foreach (Collider2D col in overlappedCols)
         {
             PlayerRPC prpc = col.GetComponent<PlayerRPC>();
