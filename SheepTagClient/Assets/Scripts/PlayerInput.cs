@@ -7,7 +7,7 @@ public class PlayerInput : MonoBehaviour
     [HideInInspector] private Rigidbody2D myRigidbody2D;
     #endregion
     #region Variables
-    [HideInInspector] public float speed = 5;
+    [HideInInspector] public float speed = 2;
     /*[HideInInspector]*/ public bool captured = false;
     [HideInInspector] private float captureCooldown = 0;
     #endregion
@@ -22,6 +22,11 @@ public class PlayerInput : MonoBehaviour
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
         captureCooldown = Time.time;
+
+        if (!GetComponent<NetworkSync>().owned)
+        {
+            Destroy(myRigidbody2D);
+        }
     }
 
     private void PlayerMovement()
