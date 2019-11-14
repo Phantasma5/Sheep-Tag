@@ -48,21 +48,13 @@ public class SpawnPoint : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    private void OnValidate()
+    [SerializeField] private SpawnPoint[] sheeps;
+    [SerializeField] private SpawnPoint[] dogs;
+
+    private void Update()
     {
-        if (UnityEditor.EditorApplication.isPlaying)
-        {
-            if (Type == SpawnType.SHEEP && !sheepSpawns.Contains(this))
-            {
-                dogSpawns.Remove(this);
-                sheepSpawns.Add(this);
-            }
-            if (Type == SpawnType.DOG && !dogSpawns.Contains(this))
-            {
-                sheepSpawns.Remove(this);
-                dogSpawns.Add(this);
-            }
-        }
+        sheeps = sheepSpawns.ToArray();
+        dogs = dogSpawns.ToArray();
     }
 #endif
 }
