@@ -9,6 +9,10 @@ public class CameraControllerSheep : MonoBehaviour
     [HideInInspector] private Vector3 camOrigin;
     private void Update()
     {
+        if (!GetComponent<NetworkSync>().owned)
+        {
+            return;
+        }
         CameraInput();
     }
     private void CameraInput()

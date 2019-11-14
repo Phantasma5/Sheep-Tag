@@ -22,7 +22,7 @@ public class TagDetection : MonoBehaviour
             {
                 foreach (var netObjInner in serverNetwork.networkObjects)//compare each person's position to that dog's position
                 {
-                    if (2 > Vector3.Distance(netObjOuter.Value.position, netObjInner.Value.position)
+                    if (0.5f > Vector3.Distance(netObjOuter.Value.position, netObjInner.Value.position)
                     && netObjOuter.Value.networkId != netObjInner.Value.networkId
                     && netObjInner.Value.prefabName == SheepPrefabName)
                     {

@@ -4,11 +4,12 @@ using System.Collections;
 public class PlayerInput : MonoBehaviour
 {
     #region References
-
+    [HideInInspector] private Rigidbody2D myRigidbody2D;
     #endregion
     #region Variables
     [HideInInspector] public float speed = 5;
     /*[HideInInspector]*/ public bool captured = false;
+    [HideInInspector] private float captureCooldown = 0;
     #endregion
     private void Awake()
     {
@@ -17,24 +18,32 @@ public class PlayerInput : MonoBehaviour
             References.localPlayer = this.gameObject;
         }
     }
-    
+    private void Start()
+    {
+        myRigidbody2D = GetComponent<Rigidbody2D>();
+        captureCooldown = Time.time;
+    }
+
     private void PlayerMovement()
     {
         if(captured)
         {
             return;
         }
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal") * speed * Time.deltaTime, Input.GetAxis("Vertical") * speed * Time.deltaTime, 0);
-        transform.position += movement;
+        myRigidbody2D.velocity = new Vector3(Input.GetAxis("Horizontal") * speed, Input.GetAxis("Vertical") * speed, 0);
 
-        //Check if the player is within 10 from origin box
-        //if(transform.position.x < 2 &&
-        //    transform.position.x > -2 &&
-        //    transform.position.y < 2 &&
-        //    transform.position.y > -2)
-        //{
-        //    GetComponent<PlayerRPC>().Rescue();
-        //}
+        if (gameObject.name == "Player_Sheep" &&
+            transform.position.x < 2 &&
+            transform.position.x > -2 &&
+            transform.position.y < 2 &&
+            transform.position.y > -2)
+        {
+            if(captureCooldown<Time.time)
+            {
+                captureCooldown = Time.time + 2;
+                GetComponent<PlayerRPC>().Rescue();
+            }
+        }
     }
     void Update()
     {

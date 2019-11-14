@@ -20,13 +20,13 @@ public class PlayerRPC : MonoBehaviour
 
         if (aSheep)
         {
-            playerInput.speed = 5;
+            playerInput.speed = 2;
             sheep = true;
             //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("SheepSprite");
         }
         else
         {
-            playerInput.speed = 10;
+            playerInput.speed = 5;
             sheep = false;
             //GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DogSprite");
         }
@@ -42,6 +42,7 @@ public class PlayerRPC : MonoBehaviour
     {
         playerInput.captured = true;
         transform.position = Vector3.zero;
+        GetComponent<Rigidbody2D>().velocity = Vector3.zero;
     }
     public void Free()
     {
