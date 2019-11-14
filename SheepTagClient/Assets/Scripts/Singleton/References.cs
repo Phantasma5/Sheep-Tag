@@ -5,7 +5,7 @@ using UnityEngine;
 public class References : MonoBehaviour
 {
     public static References instance;
-    public static GameObject player;
+    public static GameObject localPlayer;
     public static TagClient client;
 
     private void Awake()

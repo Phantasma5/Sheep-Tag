@@ -7,13 +7,24 @@ using UnityEngine.UI;
 #pragma warning disable 0649
 public class RoundManager : MonoBehaviour
 {
-    [SerializeField] private string playerPrefab = "Player";
+    [SerializeField] private string playerDogPrefab = "Player_Dog";
+    [SerializeField] private string playerSheepPrefab = "Player_Sheep";
     [SerializeField] private Text timerOutput;
     public bool IsReady
     {
         get;
         private set;
     } = false;
+    public bool IsDog
+    {
+        get;
+        private set;
+    }
+
+    private void Start()
+    {
+        SetPreferenceDog();
+    }
 
     #region RPCs
     public void LobbyCountDownStart(float countDownLength)
@@ -39,7 +50,7 @@ public class RoundManager : MonoBehaviour
         }
     }
 
-    public void RoundStart(float roundLength)
+    public void RoundStart(float roundLength, bool itValue)
     {
         Debug.Log("Round start");
 
@@ -55,7 +66,16 @@ public class RoundManager : MonoBehaviour
             timerRoutine = StartCoroutine(TimerOutputText(timerOutput, roundLength, false));
         }
 
-        References.client.myPlayer = References.client.clientNet.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        IsDog = itValue;
+
+        if(IsDog)
+        {
+            References.client.myPlayer = References.client.clientNet.Instantiate(playerDogPrefab, Vector3.zero, Quaternion.identity);
+        }
+        else
+        {
+            References.client.myPlayer = References.client.clientNet.Instantiate(playerSheepPrefab, Vector3.zero, Quaternion.identity);
+        }
         References.client.myPlayer.GetComponent<NetworkSync>().AddToArea(References.client.NetworkArea);
     }
 
@@ -91,6 +111,24 @@ public class RoundManager : MonoBehaviour
         {
             References.client.clientNet.CallRPC("ClientNotReady", UCNetwork.MessageReceiver.ServerOnly, -1, ns.GetId());
             IsReady = false;
+        }
+    }
+
+    public void SetPreferenceDog()
+    {
+        NetworkSync ns = GetComponent<NetworkSync>();
+        if (ns)
+        {
+            References.client.clientNet.CallRPC("ItPreference", UCNetwork.MessageReceiver.ServerOnly, -1, new object[] { true, ns.GetId() });
+        }
+    }
+
+    public void SetPreferenceSheep()
+    {
+        NetworkSync ns = GetComponent<NetworkSync>();
+        if (ns)
+        {
+            References.client.clientNet.CallRPC("ItPreference", UCNetwork.MessageReceiver.ServerOnly, -1, new object[] { false, ns.GetId() });
         }
     }
 

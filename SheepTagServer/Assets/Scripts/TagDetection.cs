@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TagDetection : MonoBehaviour
 {
+    private const string DogPrefabName = "Player_Dog";
+    private const string SheepPrefabName = "Player_Sheep";
+
     private TagServer tagServer;
     private ServerNetwork serverNetwork;
     private void Start()
@@ -15,13 +18,13 @@ public class TagDetection : MonoBehaviour
     {
         foreach (var netObjOuter in serverNetwork.networkObjects)
         {
-            if (netObjOuter.Value.it)//find a dog
+            if (netObjOuter.Value.prefabName == DogPrefabName)//find a dog
             {
                 foreach (var netObjInner in serverNetwork.networkObjects)//compare each person's position to that dog's position
                 {
                     if (2 > Vector3.Distance(netObjOuter.Value.position, netObjInner.Value.position)
                     && netObjOuter.Value.networkId != netObjInner.Value.networkId
-                    && !netObjInner.Value.it)
+                    && netObjInner.Value.prefabName == SheepPrefabName)
                     {
                         serverNetwork.CallRPC("Capture", UCNetwork.MessageReceiver.AllClients, netObjInner.Value.networkId);
                     }

@@ -51,4 +51,20 @@ public class TitleScreenLogic : MonoBehaviour {
             }
         }
     }
+
+    public void SetRolePreference(bool value)
+    {
+        RoundManager rm = References.client.myRoundManager.GetComponent<RoundManager>();
+        if (rm)
+        {
+            if(value)
+            {
+                rm.SetPreferenceDog();
+            }
+            else
+            {
+                rm.SetPreferenceSheep();
+            }
+        }
+    }
 }
